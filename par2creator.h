@@ -20,6 +20,8 @@
 #ifndef __PAR2CREATOR_H__
 #define __PAR2CREATOR_H__
 
+#include <pthread.h>
+
 class MainPacket;
 class CreatorPacket;
 class CriticalPacket;
@@ -90,6 +92,12 @@ protected:
   // Close all files.
   bool CloseFiles(void);
 
+  // Submethods of ProcessData
+  bool CreateParityBlocks (size_t blocklength, u32 inputindex);
+  // In the next function, aEndBlockNo is the last block number + 1.
+  void CreateParityBlockRange (size_t blocklength, u32 inputindex, u32 aStartBlockNo, u32 aEndBlockNo);
+  // Thread start function
+  static void *CreateParityBlockRangeFunc (void *aParams);
 protected:
   CommandLine::NoiseLevel noiselevel; // How noisy we should be
 
@@ -135,7 +143,10 @@ protected:
 
   u64 progress;     // How much data has been processed.
   u64 totaldata;    // Total amount of data to be processed.
-
+  int						previouslyReportedFraction;
+  pthread_mutex_t			progressMutex;
+  int						numCPUs;
+  
   bool deferhashcomputation; // If we have enough memory to compute all recovery data
                              // in one pass, then we can defer the computation of
                              // the full file hash and block crc and hashes until
