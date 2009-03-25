@@ -615,6 +615,9 @@ string DiskFile::GetCanonicalPathname(string filename)
   string result = work;
   delete [] work;
 
+  printf("Original: %s\n", filename.c_str());
+  printf("Canonical: %s\n", result.c_str());
+
   return result;
 }
 
@@ -854,14 +857,6 @@ string DiskFile::TranslateFilename(string filename)
     if (ch < 32)
     {
       ok = false;
-    }
-    else
-    {
-      switch (ch)
-      {
-      case '/':
-        ok = false;
-      }
     }
 #endif
 
