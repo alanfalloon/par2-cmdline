@@ -1,0 +1,91 @@
+par2cmdline (0.4-11) unstable; urgency=low
+
+  * debian/rules: Preserve updated aclocal.m4.  Fixes FTBFS.  Closes: #544645.
+
+ -- Bart Martens <bartm@debian.org>  Wed, 02 Sep 2009 12:59:45 +0200
+
+par2cmdline (0.4-10) unstable; urgency=low
+
+  * debian/control, debian/rules: No longer use automake1.8.  Closes: #473346.
+    Thanks to Eric Dorland <eric@debian.org>.
+
+ -- Bart Martens <bartm@debian.org>  Sun, 30 Mar 2008 07:13:58 +0200
+
+par2cmdline (0.4-9) unstable; urgency=low
+
+  * New maintainer.  Closes: #396621.
+  * debian/compat, debian/control: Use debhelper 5.
+  * debian/copyright: Updated.
+  * debian/patches/000_unidentified.diff: Moved various existing changes to
+    this patch file.
+  * debian/rules: Updated to keep generated changes out of the .diff.gz.
+  * debian/watch: Updated.
+  * debian/patches/004_kfreebsd.diff: Added.  Closes: #415106.  Patch by Cyril
+    Brulebois <cyril.brulebois@enst-bretagne.fr>, thanks.
+
+ -- Bart Martens <bartm@knars.be>  Sat, 24 Mar 2007 13:08:11 +0100
+
+par2cmdline (0.4-8) unstable; urgency=low
+
+  * Allow operation on block devices (closes: #362558)
+    - (Thanks to  Peter Cordes <peter@cordes.ca>)
+  * Now using Standards-Version 3.7.2.0 (no changes necessary)
+
+ -- Wesley J. Landaker <wjl@icecavern.net>  Sun,  4 Jun 2006 13:10:27 -0600
+
+par2cmdline (0.4-7) unstable; urgency=low
+
+  * Patch to fix G++ 4.1 issue (closes: #356767)
+    - (Thanks to Ben Hutchings <ben@decadentplace.org.uk>)
+
+ -- Wesley J. Landaker <wjl@icecavern.net>  Sat, 25 Mar 2006 18:57:18 -0700
+
+par2cmdline (0.4-6) unstable; urgency=low
+
+  * Applied patch to fix crash in quiet modes (closes: #299658)
+    - (Thanks to Stelios Bounanos <sb-bugs@enotty.net>)
+  * Added a few more relevant files to debian/docs
+  * Added debian/watch to scan for upstream versions
+
+ -- Wesley J. Landaker <wjl@icecavern.net>  Thu, 29 Sep 2005 07:51:05 -0600
+
+par2cmdline (0.4-5) unstable; urgency=low
+
+  * Whoops, *actually* updated mainter info this time. =)
+  * Added debian/svn-deblayout (for use with svn-buildpackage)
+
+ -- Wesley J. Landaker <wjl@icecavern.net>  Sun, 18 Sep 2005 17:24:55 -0600
+
+par2cmdline (0.4-4) unstable; urgency=low
+
+  * Adopting package, new maintainer (closes: #321457)
+  * Updated to Standards-Version 3.6.2.0
+
+ -- Wesley J. Landaker <wjl@icecavern.net>  Sun, 18 Sep 2005 16:45:25 -0600
+
+par2cmdline (0.4-3) unstable; urgency=low
+
+  * Update my email address.
+
+ -- Andres Salomon <dilinger@debian.org>  Fri, 05 Aug 2005 12:13:25 -0400
+
+par2cmdline (0.4-2) unstable; urgency=low
+
+  * Fix gcc-4.0 build failures; thanks to Andreas Jochens (closes: #287904).
+
+ -- Andres Salomon <dilinger@voxel.net>  Thu, 30 Dec 2004 21:21:01 -0500
+
+par2cmdline (0.4-1) unstable; urgency=low
+
+  * New upstream release.
+  * Update package to use automake1.8 instead of 1.7.
+  * Add manpages for par2 and symlinks (closes: #246130).
+
+ -- Andres Salomon <dilinger@voxel.net>  Thu, 27 May 2004 14:19:30 -0400
+
+par2cmdline (0.3-1) unstable; urgency=low
+
+  * Initial Release.  (Closes: #201125)
+
+ -- Andres Salomon <dilinger@voxel.net>  Wed, 14 Jan 2004 22:47:56 -0500
+

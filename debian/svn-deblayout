@@ -1,0 +1,7 @@
+buildArea=../build-area
+origDir=../tarballs
+tagsUrl=svn://tonberry/debian/par2cmdline/tag
+trunkDir=.
+trunkUrl=svn://tonberry/debian/par2cmdline/trunk
+upsCurrentUrl=svn://tonberry/debian/par2cmdline/branch/upstream/current
+upsTagUrl=svn://tonberry/debian/par2cmdline/branch/upstream

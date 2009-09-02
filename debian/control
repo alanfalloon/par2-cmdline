@@ -1,0 +1,19 @@
+Source: par2cmdline
+Section: utils
+Priority: extra
+Maintainer: Bart Martens <bartm@debian.org>
+Build-Depends: cdbs, debhelper (>= 5), autotools-dev, automake1.9
+Standards-Version: 3.8.3
+Homepage: http://parchive.sourceforge.net/
+
+Package: par2
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Parity Archive Volume Set, for checking and repair of files
+ A command line implementation of the PAR v2.0 specification.  This
+ specification is used for parity checking and repair of a file set.
+ If the files in the recovery set ever get damaged (e.g. when they are
+ transmitted or stored on a faulty disk) the client can read the damaged
+ input files, read the (possibly damaged) PAR files, and regenerate the
+ original input files. Of course, not all damages can be repaired, but
+ many can.

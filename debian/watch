@@ -1,0 +1,3 @@
+version=3
+opts="uversionmangle=s/-(x86|sparc|ppc|alpha|amd64).*//" \
+http://sf.net/parchive/par2cmdline-(.*)\.tar\.gz
