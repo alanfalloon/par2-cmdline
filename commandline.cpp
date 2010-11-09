@@ -537,28 +537,26 @@ bool CommandLine::Parse(int argc, char *argv[])
       else
       {
         list<string> *filenames;
+        filenames = new list<string>;
 
-        // If the argument includes wildcard characters, 
-        // search the disk for matching files
-        if (strchr(argv[0], '*') || strchr(argv[0], '?'))
+        if (argv[0][0] == '-' && argv[0][1] == '\0')
         {
-          string path;
-          string name;
-          DiskFile::SplitFilename(argv[0], path, name);
-
-          filenames = DiskFile::FindFiles(path, name);
+            while(true)
+            {
+                string filename;
+                if (std::getline(cin, filename))
+                    filenames->push_back(filename);
+                else
+                    break;
+            }
         }
         else
-        {
-          filenames = new list<string>;
-          filenames->push_back(argv[0]);
-        }
+            filenames->push_back(argv[0]);
 
         list<string>::iterator fn = filenames->begin();
         while (fn != filenames->end())
         {
-          // Convert filename from command line into a full path + filename
-          string filename = DiskFile::GetCanonicalPathname(*fn);
+          string filename = *fn;
 
           // If this is the first file on the command line, then it
           // is the main PAR2 file.
