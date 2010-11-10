@@ -1,0 +1,8 @@
+#! /bin/sh
+
+# Bootstrap this package from checked-out sources.
+
+${ACLOCAL-aclocal} --force -I m4
+${AUTOCONF-autoconf} --force
+${AUTOHEADER-autoheader} --force
+${AUTOMAKE-automake} --foreign --add-missing --copy --force-missing
