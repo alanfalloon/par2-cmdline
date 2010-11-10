@@ -45,8 +45,8 @@ par2_SOURCES = par2cmdline.cpp par2cmdline.h \
 	verificationhashtable.cpp verificationhashtable.h \
 	verificationpacket.cpp verificationpacket.h
 
-LDADD = -lstdc++
-AM_CXXFLAGS = -Wall
+LDADD = $(PTHREAD_LIBS) -lstdc++
+AM_CXXFLAGS = $(PTHREAD_CFLAGS) -Wall
 
 EXTRA_DIST = PORTING ROADMAP par2cmdline.sln par2cmdline.vcproj \
 	testdata.tar.gz pretest test1 test2 test3 test4 test5 test6 \
