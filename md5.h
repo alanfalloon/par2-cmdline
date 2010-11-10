@@ -31,6 +31,12 @@
 //  MD5Hash hash;
 //  context.Final(hash);
 
+#ifdef WIN32
+#pragma pack(push, 1)
+#define PACKED
+#else
+#define PACKED __attribute__ ((packed))
+#endif
 
 
 // MD5 Hash value
@@ -60,7 +66,7 @@ public:
 
 public:
   u8 hash[16]; // 16 byte MD5 Hash value
-};
+} PACKED;
 
 // Intermediate computation state
 
