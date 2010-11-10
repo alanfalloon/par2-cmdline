@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/sysctl.h>
+#include <unistd.h>
 
 #ifdef _MSC_VER
 #ifdef _DEBUG
@@ -121,6 +122,7 @@ Par2Repairer::Par2Repairer(void)
 	pthread_mutex_init (&progressMutex, NULL);
 	pthread_mutex_init (&fileIteratorMutex, NULL);
 	// Go and find out the number of CPU's
+#ifdef CTL_HW
 	int lName [2] = { CTL_HW, HW_NCPU };
 	size_t lLen = sizeof (numCPUs);
 	if (sysctl(lName, 2, &numCPUs, &lLen, NULL, 0) != 0)
@@ -128,6 +130,11 @@ Par2Repairer::Par2Repairer(void)
 		assert (false);
 		numCPUs = 1;		// Default value if we have an error in sysctl
 	}
+#elif defined(_SC_NPROCESSORS_ONLN)
+  numCPUs = sysconf( _SC_NPROCESSORS_ONLN );
+#else
+  numCPUs = 1;
+#endif
 }
 
 Par2Repairer::~Par2Repairer(void)
