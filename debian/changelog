@@ -1,3 +1,12 @@
+par2cmdline (0.4-12) unstable; urgency=low
+
+  * Merge in path changes from git://github.com/viric/par2cmdline-subdir.git
+  * Merge in upstream changes from CVS
+  * Generate autotools build cruft before building
+  * Fix linux build bugs introduced upstream
+
+ -- Alan Falloon <alan.falloon@gmail.com>  Wed, 10 Nov 2010 19:12:22 -0500
+
 par2cmdline (0.4-11) unstable; urgency=low
 
   * debian/rules: Preserve updated aclocal.m4.  Fixes FTBFS.  Closes: #544645.

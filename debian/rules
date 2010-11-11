@@ -1,16 +1,12 @@
 #!/usr/bin/make -f
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
 include /usr/share/cdbs/1/class/autotools.mk
 
-DEB_AUTO_UPDATE_AUTOMAKE := 1.9
-
-CRUFT = Makefile.in configure config.h.in
-
-update-config::
-	for f in $(CRUFT); do [ -e $$f.debian-rules-orig ] || cp -p $$f $$f.debian-rules-orig; done
+$(DEB_BUILDDIR)/config.status: debian/stamp-bootstrap
+debian/stamp-bootstrap: bootstrap
+	sh -e -x $<
+	touch $@
 
 clean::
-	rm -rf autom4te.cache/
-	for f in $(CRUFT); do [ ! -e $$f.debian-rules-orig ] || mv $$f.debian-rules-orig $$f; done
+	rm -f debian/stamp-bootstrap
