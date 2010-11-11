@@ -41,12 +41,11 @@
 
 // MD5 Hash value
 
-class MD5Hash
-{
-public:
-  // Constructor does not initialise the value
-  MD5Hash(void) {};
+struct MD5Hash;
+ostream& operator<<(ostream &s, const MD5Hash &hash);
 
+struct MD5Hash
+{
   // Comparison operators
   bool operator==(const MD5Hash &other) const;
   bool operator!=(const MD5Hash &other) const;
@@ -60,11 +59,6 @@ public:
   friend ostream& operator<<(ostream &s, const MD5Hash &hash);
   string print(void) const;
 
-  // Copy and assignment
-  MD5Hash(const MD5Hash &other);
-  MD5Hash& operator=(const MD5Hash &other);
-
-public:
   u8 hash[16]; // 16 byte MD5 Hash value
 } PACKED;
 
@@ -150,16 +144,9 @@ inline bool MD5Hash::operator<=(const MD5Hash &other) const
   return !other.operator<(*this);
 }
 
-inline MD5Hash::MD5Hash(const MD5Hash &other)
-{
-  memcpy(&hash, &other.hash, sizeof(hash));
-}
-
-inline MD5Hash& MD5Hash::operator=(const MD5Hash &other)
-{
-  memcpy(&hash, &other.hash, sizeof(hash));
-
-  return *this;
-}
+#ifdef WIN32
+#pragma pack(pop)
+#endif
+#undef PACKED
 
 #endif // __MD5_H__

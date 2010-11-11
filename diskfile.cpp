@@ -27,6 +27,11 @@ static char THIS_FILE[]=__FILE__;
 #endif
 #endif
 
+#if defined(__FreeBSD_kernel__)
+#include <sys/disk.h>
+#define BLKGETSIZE64 DIOCGMEDIASIZE
+#endif
+
 
 #ifdef WIN32
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -702,19 +707,6 @@ list<string>* DiskFile::FindFiles(string path, string wildcard)
 
   return matches;
 }
-
-u64 DiskFile::GetFileSize(string filename)
-{
-  struct stat st;
-  if ((0 == stat(filename.c_str(), &st)) && (0 != (st.st_mode & S_IFREG)))
-  {
-    return st.st_size;
-  }
-  else
-  {
-    return 0;
-  }
-}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif
 
@@ -825,9 +817,34 @@ void DiskFile::SplitFilename(string filename, string &path, string &name)
 bool DiskFile::FileExists(string filename)
 {
   struct stat st;
-  return ((0 == stat(filename.c_str(), &st)) && (0 != (st.st_mode & S_IFREG)));
+  return ((0 == stat(filename.c_str(), &st)) &&
+	  (st.st_mode & (S_IFREG|S_IFBLK)) );
 }
 
+u64 DiskFile::GetFileSize(string filename)
+{
+  struct stat st;
+  if (0 == stat(filename.c_str(), &st))
+  {
+    if (st.st_mode & S_IFREG)
+    {
+      return st.st_size;
+    }
+    else if (st.st_mode & S_IFBLK)
+    {
+      FILE *fp;
+      u64 size = 0;
+      if ( NULL != (fp = fopen(filename.c_str(), "rb")) )
+      {
+	ioctl(fileno(fp), BLKGETSIZE64, &size);
+	fclose(fp);
+      }
+      return size;
+    }
+  }
+
+  return 0;
+}
 
 
 
