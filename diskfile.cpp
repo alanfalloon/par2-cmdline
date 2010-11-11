@@ -345,7 +345,18 @@ list<string>* DiskFile::FindFiles(string path, string wildcard)
   return matches;
 }
 
-
+u64 DiskFile::GetFileSize(string filename)
+{
+  struct _stati64 st;
+  if ((0 == _stati64(filename.c_str(), &st)) && (0 != (st.st_mode & S_IFREG)))
+  {
+    return st.st_size;
+  }
+  else
+  {
+    return 0;
+  }
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -620,6 +631,9 @@ string DiskFile::GetCanonicalPathname(string filename)
   string result = work;
   delete [] work;
 
+  printf("Original: %s\n", filename.c_str());
+  printf("Canonical: %s\n", result.c_str());
+
   return result;
 }
 
@@ -693,7 +707,6 @@ list<string>* DiskFile::FindFiles(string path, string wildcard)
 
   return matches;
 }
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif
 
@@ -872,14 +885,6 @@ string DiskFile::TranslateFilename(string filename)
     if (ch < 32)
     {
       ok = false;
-    }
-    else
-    {
-      switch (ch)
-      {
-      case '/':
-        ok = false;
-      }
     }
 #endif
 

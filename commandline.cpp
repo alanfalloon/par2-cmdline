@@ -537,28 +537,26 @@ bool CommandLine::Parse(int argc, char *argv[])
       else
       {
         list<string> *filenames;
+        filenames = new list<string>;
 
-        // If the argument includes wildcard characters, 
-        // search the disk for matching files
-        if (strchr(argv[0], '*') || strchr(argv[0], '?'))
+        if (argv[0][0] == '-' && argv[0][1] == '\0')
         {
-          string path;
-          string name;
-          DiskFile::SplitFilename(argv[0], path, name);
-
-          filenames = DiskFile::FindFiles(path, name);
+            while(true)
+            {
+                string filename;
+                if (std::getline(cin, filename))
+                    filenames->push_back(filename);
+                else
+                    break;
+            }
         }
         else
-        {
-          filenames = new list<string>;
-          filenames->push_back(argv[0]);
-        }
+            filenames->push_back(argv[0]);
 
         list<string>::iterator fn = filenames->begin();
         while (fn != filenames->end())
         {
-          // Convert filename from command line into a full path + filename
-          string filename = DiskFile::GetCanonicalPathname(*fn);
+          string filename = *fn;
 
           // If this is the first file on the command line, then it
           // is the main PAR2 file.
@@ -642,30 +640,34 @@ bool CommandLine::Parse(int argc, char *argv[])
           }
           else
           {
-            // All other files must exist
+            // Originally, all specified files were supposed to exist, or the program
+            // would stop with an error message. This was not practical, for example in
+            // a directory with files appearing and disappearing (an active download directory).
+            // So the new rule is: when a specified file doesn't exist, it is silently skipped.
             if (!DiskFile::FileExists(filename))
             {
-              cerr << "The source file does not exist: " << filename << endl;
-              return false;
+				cout << "Ignoring non-existent source file: " << filename << endl;
             }
+			else
+			{
+				u64 filesize = DiskFile::GetFileSize(filename);
 
-            u64 filesize = DiskFile::GetFileSize(filename);
+				// Ignore all 0 byte files
+				if (filesize > 0)
+				{
+				  extrafiles.push_back(ExtraFile(filename, filesize));
 
-            // Ignore all 0 byte files
-            if (filesize > 0)
-            {
-              extrafiles.push_back(ExtraFile(filename, filesize));
-
-              // track the total size of the source files and how
-              // big the largest one is.
-              totalsourcesize += filesize;
-              if (largestsourcesize < filesize)
-                largestsourcesize = filesize;
-            }
-            else
-            {
-              cout << "Skipping 0 byte file: " << filename << endl;
-            }
+				  // track the total size of the source files and how
+				  // big the largest one is.
+				  totalsourcesize += filesize;
+				  if (largestsourcesize < filesize)
+					largestsourcesize = filesize;
+				}
+				else
+				{
+				  cout << "Skipping 0 byte file: " << filename << endl;
+				}
+			} //end file exists
           }
 
           ++fn;

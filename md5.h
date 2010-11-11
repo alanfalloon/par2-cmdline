@@ -20,13 +20,6 @@
 #ifndef __MD5_H__
 #define __MD5_H__
 
-#ifdef WIN32
-#pragma pack(push, 1)
-#define PACKED
-#else
-#define PACKED __attribute__ ((packed))
-#endif
-
 // This file defines the MD5Hash and MD5Context objects which are used
 // to compute and manipulate the MD5 Hash values for a block of data.
 
@@ -38,6 +31,12 @@
 //  MD5Hash hash;
 //  context.Final(hash);
 
+#ifdef WIN32
+#pragma pack(push, 1)
+#define PACKED
+#else
+#define PACKED __attribute__ ((packed))
+#endif
 
 
 // MD5 Hash value

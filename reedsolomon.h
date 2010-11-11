@@ -64,7 +64,8 @@ public:
                const void *inputbuffer, // Buffer containing input data
                u32 outputindex,         // The row in the RS matrix
                void *outputbuffer);     // Buffer containing output data
-
+private:
+		bool InternalProcess(const g &factor, size_t size, const void *inputbuffer, void *outputbuffer);	// Optimization
 protected:
   // Perform Gaussian Elimination
   bool GaussElim(CommandLine::NoiseLevel noiselevel,
@@ -144,6 +145,20 @@ inline ReedSolomon<g>::~ReedSolomon(void)
 #ifdef LONGMULTIPLY
   delete glmt;
 #endif
+}
+
+template<class g>
+inline bool ReedSolomon<g>::Process(size_t size, u32 inputindex, const void *inputbuffer, u32 outputindex, void *outputbuffer)
+{
+	// Optimization: it occurs frequently the function exits early on, so inline the start.
+	// This resulted in a speed gain of approx. 8% in repairing.
+
+	// Look up the appropriate element in the RS matrix
+	g factor = leftmatrix[outputindex * (datapresent + datamissing) + inputindex];
+	// Do nothing if the factor happens to be 0
+	if (factor == 0)
+		return eSuccess;
+	return this->InternalProcess (factor, size, inputbuffer, outputbuffer);
 }
 
 u32 gcd(u32 a, u32 b);
@@ -242,11 +257,14 @@ inline bool ReedSolomon<g>::Compute(CommandLine::NoiseLevel noiselevel)
   // One row for each present recovery block that will be used for a missing data block
   for (unsigned int row=0; row<datamissing; row++)
   {
+    // Define MPDL to skip reporting and speed things up
+#ifndef MPDL
     if (noiselevel > CommandLine::nlQuiet)
     {
       int progress = row * 1000 / (datamissing+parmissing);
       cout << "Constructing: " << progress/10 << '.' << progress%10 << "%\r" << flush;
     }
+#endif
 
     // Get the exponent of the next present recovery block
     while (!outputrow->present)
@@ -286,11 +304,14 @@ inline bool ReedSolomon<g>::Compute(CommandLine::NoiseLevel noiselevel)
   outputrow = outputrows.begin();
   for (unsigned int row=0; row<parmissing; row++)
   {
+    // Define MPDL to skip reporting and speed things up
+#ifndef MPDL
     if (noiselevel > CommandLine::nlQuiet)
     {
       int progress = (row+datamissing) * 1000 / (datamissing+parmissing);
       cout << "Constructing: " << progress/10 << '.' << progress%10 << "%\r" << flush;
     }
+#endif
 
     // Get the exponent of the next missing recovery block
     while (outputrow->present)
@@ -420,6 +441,8 @@ inline bool ReedSolomon<g>::GaussElim(CommandLine::NoiseLevel noiselevel, unsign
     // For every other row in the matrix
     for (unsigned int row2=0; row2<rows; row2++)
     {
+      // Define MPDL to skip reporting and speed things up
+#ifndef MPDL
       if (noiselevel > CommandLine::nlQuiet)
       {
         int newprogress = (row*rows+row2) * 1000 / (datamissing*rows);
@@ -429,6 +452,7 @@ inline bool ReedSolomon<g>::GaussElim(CommandLine::NoiseLevel noiselevel, unsign
           cout << "Solving: " << progress/10 << '.' << progress%10 << "%\r" << flush;
         }
       }
+#endif
 
       if (row != row2)
       {

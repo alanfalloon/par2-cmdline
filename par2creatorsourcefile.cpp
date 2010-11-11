@@ -60,16 +60,7 @@ bool Par2CreatorSourceFile::Open(CommandLine::NoiseLevel noiselevel, const Comma
   blockcount = (u32)((filesize + blocksize-1) / blocksize);
   
   // Determine what filename to record in the PAR2 files
-  string::size_type where;
-  if (string::npos != (where = diskfilename.find_last_of('\\')) ||
-      string::npos != (where = diskfilename.find_last_of('/')))
-  {
-    parfilename = diskfilename.substr(where+1);
-  }
-  else
-  {
-    parfilename = diskfilename;
-  }
+  parfilename = diskfilename;
 
   // Create the Description and Verification packets
   descriptionpacket = new DescriptionPacket;
@@ -213,18 +204,22 @@ bool Par2CreatorSourceFile::Open(CommandLine::NoiseLevel noiselevel, const Comma
         }
       }
 
-      offset += want;
-
+      // Define MPDL to skip reporting; speeds up things considerably
+#ifndef MPDL
       if (noiselevel > CommandLine::nlQuiet)
       {
         // Display progress
         u32 oldfraction = (u32)(1000 * offset / filesize);
-        u32 newfraction = (u32)(1000 * offset / filesize);
+		// The original source had here: offset += want;
+		// That's definitely an error, because offset must always be incremented!
+        u32 newfraction = (u32)(1000 * (offset + want) / filesize);
         if (oldfraction != newfraction)
         {
           cout << newfraction/10 << '.' << newfraction%10 << "%\r" << flush;
         }
       }
+#endif
+      offset += want;
     }
 
     // Did we finish the last block
@@ -320,7 +315,7 @@ void Par2CreatorSourceFile::UpdateHashes(u32 blocknumber, const void *buffer, si
 
 
   // Update the full file hash, but don't go beyond the end of the file
-  if (length > filesize - blocknumber * length)
+  if ((u64)length > filesize - blocknumber * (u64)length)
   {
     length = (size_t)(filesize - blocknumber * (u64)length);
   }

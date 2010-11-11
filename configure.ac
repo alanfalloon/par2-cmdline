@@ -34,6 +34,7 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 
 dnl Checks for libraries.
+ACX_PTHREAD
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
